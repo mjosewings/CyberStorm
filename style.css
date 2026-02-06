@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  background: #050505;
+  font-family: monospace;
+  text-align: center;
+  color: #00fff7;
+  overflow: hidden;
+}
+ canvas {
+   display: block;
+   margin: 0 auto;
+   border: 2px solid #00fff7;
+   background: black;
+ }
+
+/* Loading Screen */
+#loadingScreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  color: #ff99ff;
+  font-size: 24px;
+}
+
+/* Menu, Game Over Screen */
+#menu, #gameOverScreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+button {
+  background: #00fff7;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 18px;
+}
