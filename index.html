@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYBERSTORM — Night City Under Siege</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== LOADING SCREEN ===== -->
+  <div id="screen-loading">
+    <div class="load-bg-grid"></div>
+    <div class="load-content">
+      <div class="load-logo">
+        <span class="load-logo-cyber">CYBER</span><span class="load-logo-storm">STORM</span>
+      </div>
+      <div class="load-tagline">NIGHT CITY // 2077 // NETRUNNER EDITION</div>
+      <div class="load-bar-wrap">
+        <div class="load-bar-track">
+          <div class="load-bar-fill" id="loadBarFill"></div>
+          <div class="load-bar-shimmer"></div>
+        </div>
+        <div class="load-bar-labels">
+          <span id="loadStatusText">INITIALIZING NEURAL LINK...</span>
+          <span id="loadPct">0%</span>
+        </div>
+      </div>
+      <div class="load-corner tl"></div>
+      <div class="load-corner tr"></div>
+      <div class="load-corner bl"></div>
+      <div class="load-corner br"></div>
+    </div>
+    <div class="load-footer">
+      <span>ARASAKA CORP DETECTED — THREAT LEVEL: MAXIMUM</span>
+      <span>BUILD v2.0.77</span>
+    </div>
+  </div>
+
+  <!-- ===== MAIN MENU SCREEN ===== -->
+  <div id="screen-menu" class="hidden">
+    <canvas id="menuBg"></canvas>
+    <div class="menu-overlay"></div>
+    <div class="menu-content">
+      <div class="menu-logo">
+        <div class="menu-logo-glitch" data-text="CYBERSTORM">CYBERSTORM</div>
+        <div class="menu-subtitle">NIGHT CITY IS UNDER SIEGE</div>
+      </div>
+      <nav class="menu-nav">
+        <button class="menu-btn" id="btnPlay" data-sound="click">
+          <span class="menu-btn-bracket">[</span>
+          JACK IN — NEW GAME
+          <span class="menu-btn-bracket">]</span>
+        </button>
+        <button class="menu-btn" id="btnHowto" data-sound="click">
+          <span class="menu-btn-bracket">[</span>
+          NEURAL MANUAL
+          <span class="menu-btn-bracket">]</span>
+        </button>
+        <button class="menu-btn" id="btnCredits" data-sound="click">
+          <span class="menu-btn-bracket">[</span>
+          CREDITS // GANG INFO
+          <span class="menu-btn-bracket">]</span>
+        </button>
+      </nav>
+      <div class="menu-music-ctrl">
+        <span class="music-label">♫ MUSIC</span>
+        <button id="btnMuteMusic" class="icon-btn" title="Toggle Music">🔊</button>
+        <button id="btnMuteSfx" class="icon-btn" title="Toggle SFX">🔔</button>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.6" title="Volume" />
+      </div>
+      <div class="menu-hiscore">HIGH SCORE: <span id="menuHiScore">000000</span></div>
+    </div>
+    <!-- HOW TO PLAY panel -->
+    <div class="menu-panel hidden" id="panelHowto">
+      <div class="panel-title">NEURAL MANUAL</div>
+      <div class="panel-body">
+        <div class="manual-row"><kbd>← →</kbd> Move your rig</div>
+        <div class="manual-row"><kbd>SPACE</kbd> Fire weapon (hold = rapid)</div>
+        <div class="manual-row"><kbd>P</kbd> Pause game</div>
+        <div class="manual-row"><kbd>M</kbd> Mute music in-game</div>
+        <hr class="neon-hr"/>
+        <div class="manual-row power-row">💛 RAPID FIRE — Increased fire rate</div>
+        <div class="manual-row power-row">💙 SHIELD — Temporary invincibility</div>
+        <div class="manual-row power-row">💚 MULTI-SHOT — Triple bullets</div>
+        <div class="manual-row power-row">❤️ EXTRA LIFE — +1 life</div>
+        <hr class="neon-hr"/>
+        <div class="manual-row">Every 3rd wave: <strong>BOSS FIGHT</strong></div>
+        <div class="manual-row">UFO ships appear for bonus points</div>
+      </div>
+      <button class="panel-close" onclick="document.getElementById('panelHowto').classList.add('hidden')">✕ CLOSE</button>
+    </div>
+    <!-- CREDITS panel -->
+    <div class="menu-panel hidden" id="panelCredits">
+      <div class="panel-title">GANG INTEL</div>
+      <div class="panel-body">
+        <p>CYBERSTORM is a fan project inspired by</p>
+        <p><strong>Cyberpunk 2077</strong> by CD Projekt RED</p>
+        <p>and <strong>Space Invaders</strong> by Taito.</p>
+        <hr class="neon-hr"/>
+        <p>All music tracks are user-provided.</p>
+        <p>Place your audio files in <code>assets/music/</code></p>
+        <p>and update <code>js/audio.js</code> with filenames.</p>
+      </div>
+      <button class="panel-close" onclick="document.getElementById('panelCredits').classList.add('hidden')">✕ CLOSE</button>
+    </div>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="screen-game" class="hidden">
+    <!-- HUD Top Bar -->
+    <div id="hud-top">
+      <div class="hud-block">
+        <div class="hud-label">SCORE</div>
+        <div class="hud-val" id="hudScore">000000</div>
+      </div>
+      <div class="hud-block hud-center-block">
+        <div class="hud-title-small">CYBERSTORM</div>
+        <div class="hud-wave-label">WAVE <span id="hudWave">01</span></div>
+      </div>
+      <div class="hud-block hud-right">
+        <div class="hud-label">HIGH SCORE</div>
+        <div class="hud-val yellow" id="hudHiScore">000000</div>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div id="canvas-wrap">
+      <canvas id="gameCanvas" width="720" height="500"></canvas>
+      <!-- Pause overlay -->
+      <div id="pause-overlay" class="hidden">
+        <div class="pause-title">// PAUSED //</div>
+        <div class="pause-sub">NEURAL LINK SUSPENDED</div>
+        <button class="menu-btn small" onclick="GameScreens.resume()">▶ RESUME</button>
+        <button class="menu-btn small" onclick="GameScreens.quitToMenu()">⬅ MAIN MENU</button>
+      </div>
+      <!-- Boss health bar -->
+      <div id="boss-bar" class="hidden">
+        <div class="boss-label">ARASAKA SOVEREIGN</div>
+        <div class="boss-track"><div id="bossHpFill"></div></div>
+      </div>
+      <!-- Power-up notification -->
+      <div id="powerup-notify" class="hidden"></div>
+      <!-- Kill feed -->
+      <div id="kill-feed"></div>
+    </div>
+
+    <!-- HUD Bottom Bar -->
+    <div id="hud-bottom">
+      <div id="lives-wrap">
+        <span class="hud-label">LIVES</span>
+        <div id="livesIcons"></div>
+      </div>
+      <div id="active-powerups"></div>
+      <div id="hud-status"></div>
+      <div id="hud-controls-hint">← → MOVE &nbsp;|&nbsp; SPACE FIRE &nbsp;|&nbsp; P PAUSE</div>
+    </div>
+  </div>
+
+  <!-- ===== WAVE COMPLETE SCREEN ===== -->
+  <div id="screen-wavecomplete" class="hidden">
+    <div class="result-bg-anim"></div>
+    <div class="result-content">
+      <div class="result-title cyan">WAVE CLEARED</div>
+      <div class="result-wave-num" id="wcWaveNum">WAVE 1</div>
+      <div class="result-stats">
+        <div class="stat-row"><span>Score</span><span id="wcScore">0</span></div>
+        <div class="stat-row"><span>Enemies Killed</span><span id="wcKills">0</span></div>
+        <div class="stat-row"><span>Accuracy</span><span id="wcAccuracy">0%</span></div>
+        <div class="stat-row bonus"><span>Wave Bonus</span><span id="wcBonus">+0</span></div>
+      </div>
+      <div class="result-flavor" id="wcFlavor">The corps retreat... for now.</div>
+      <button class="menu-btn" id="btnNextWave">NEXT WAVE ▶</button>
+    </div>
+  </div>
+
+  <!-- ===== GAME OVER SCREEN ===== -->
+  <div id="screen-gameover" class="hidden">
+    <div class="result-bg-anim red"></div>
+    <div class="result-content">
+      <div class="result-title red" id="goTitle">FLATLINED</div>
+      <div class="result-sub" id="goSub">THE CORPS WIN... FOR NOW</div>
+      <div class="result-stats">
+        <div class="stat-row"><span>Final Score</span><span id="goScore">0</span></div>
+        <div class="stat-row"><span>Wave Reached</span><span id="goWave">1</span></div>
+        <div class="stat-row"><span>Enemies Killed</span><span id="goKills">0</span></div>
+        <div class="stat-row"><span>High Score</span><span id="goHiScore">0</span></div>
+        <div class="stat-row new-record hidden" id="goNewRecord">★ NEW HIGH SCORE ★</div>
+      </div>
+      <div class="go-buttons">
+        <button class="menu-btn" id="btnRetry">↺ TRY AGAIN</button>
+        <button class="menu-btn secondary" id="btnGoMenu">⬅ MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Modules — ORDER MATTERS -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/barriers.js"></script>
+  <script src="js/bullets.js"></script>
+  <script src="js/powerups.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/hud.js"></script>
+  <script src="js/screens.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
